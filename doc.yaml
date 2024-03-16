@@ -1,0 +1,213 @@
+openapi: 3.0.0
+info:
+  title: Фильмотека API
+  description: REST API для управления базой данных фильмов
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+paths:
+  /movies:
+    get:
+      summary: Получить список фильмов
+      description: Возвращает список всех фильмов
+      parameters:
+        - name: sortBy
+          in: query
+          description: Поле для сортировки результатов (title, rating, release_date)
+          schema:
+            type: string
+        - name: sortOrder
+          in: query
+          description: Направление сортировки (asc, desc)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Movie'
+    post:
+      summary: Добавить фильм
+      description: Добавляет новый фильм в базу данных
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MovieInput'
+      responses:
+        '201':
+          description: Успешное создание
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+  /actors:
+    get:
+      summary: Получить список актёров
+      description: Возвращает список всех актёров
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Actor'
+    post:
+      summary: Добавить актёра
+      description: Добавляет нового актёра в базу данных
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActorInput'
+      responses:
+        '201':
+          description: Успешное создание
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Actor'
+  /actors/{actorID}:
+    put:
+      summary: Обновить информацию об актёре
+      description: Обновляет информацию об актёре по заданному ID
+      parameters:
+        - name: actorID
+          in: path
+          description: ID актёра для обновления
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActorInput'
+      responses:
+        '200':
+          description: Успешное обновление
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Actor'
+    delete:
+      summary: Удалить актёра
+      description: Удаляет актёра по заданному ID
+      parameters:
+        - name: actorID
+          in: path
+          description: ID актёра для удаления
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Успешное удаление
+components:
+  schemas:
+    Actor:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Уникальный идентификатор актёра
+        name:
+          type: string
+          description: Имя актёра
+        gender:
+          type: string
+          description: Пол актёра
+        dateOfBirth:
+          type: string
+          format: date
+          description: Дата рождения актёра
+      required:
+        - name
+        - gender
+        - dateOfBirth
+    ActorInput:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Имя актёра
+        gender:
+          type: string
+          description: Пол актёра
+        dateOfBirth:
+          type: string
+          format: date
+          description: Дата рождения актёра
+      required:
+        - name
+        - gender
+        - dateOfBirth
+    Movie:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Уникальный идентификатор фильма
+        title:
+          type: string
+          description: Название фильма
+        description:
+          type: string
+          description: Описание фильма
+        releaseDate:
+          type: string
+          format: date
+          description: Дата выпуска фильма
+        rating:
+          type: number
+          format: float
+          description: Рейтинг фильма (от 0 до 10)
+        actors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Actor'
+      required:
+        - title
+        - releaseDate
+        - rating
+    MovieInput:
+        type: object
+        properties:
+          title:
+            type: string
+            description: Название фильма
+          description:
+            type: string
+            description: Описание фильма
+          releaseDate:
+            type: string
+            format: date
+            description: Дата выпуска фильма
+          rating:
+            type: number
+            format: float
+            description: Рейтинг фильма (от 0 до 10)
+          actors:
+            type: array
+            items:
+              type: integer
+            description: Список идентификаторов актёров, участвующих в фильме
+        required:
+          - title
+          - releaseDate
+          - rating
+
+
+
+
+
+
